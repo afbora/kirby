@@ -127,7 +127,8 @@ class Hook
     }
 
     /**
-     * Returns the type of the hook
+     * Register actions
+     * It promises to run a callback in the specified action.
      *
      * @param string $action
      * @param Closure $callback
