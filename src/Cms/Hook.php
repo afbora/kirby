@@ -2,6 +2,8 @@
 
 namespace Kirby\Cms;
 
+use Closure;
+
 /**
  * Kirby hook object
  *
@@ -67,7 +69,7 @@ class Hook
     }
 
     /**
-     * Creates a new field object
+     * Creates a new hook object
      *
      * @param string $name
      * @param array $arguments
@@ -81,7 +83,7 @@ class Hook
         $this->type      = $type;
         $this->action    = $action;
         $this->state     = $state;
-        $this->arguments = $arguments;
+        $this->arguments = array_change_key_case($arguments);
     }
 
     /**
@@ -122,6 +124,22 @@ class Hook
     public function type(): string
     {
         return $this->type;
+    }
+
+    /**
+     * Returns the type of the hook
+     *
+     * @param string $action
+     * @param Closure $callback
+     * @return Hook
+     */
+    public function promise(string $action, Closure $callback): self
+    {
+        if ($this->action === $action) {
+            $callback(...array_values($this->arguments));
+        }
+
+        return $this;
     }
 
     /**
