@@ -427,12 +427,20 @@ class User extends ModelWithContent
         $session = $this->sessionFromOptions($session);
 
         $kirby->trigger('user.login:before', $this, $session);
+        $kirby->trigger('user:before', new Hook('user.login:before', [
+            'user'    => $this,
+            'session' => $session
+        ]));
 
         $session->regenerateToken(); // privilege change
         $session->data()->set('user.id', $this->id());
         $this->kirby()->auth()->setUser($this);
 
         $kirby->trigger('user.login:after', $this, $session);
+        $kirby->trigger('user:after', new Hook('user.login:after', [
+            'user'    => $this,
+            'session' => $session
+        ]));
     }
 
     /**
@@ -447,6 +455,10 @@ class User extends ModelWithContent
         $session = $this->sessionFromOptions($session);
 
         $kirby->trigger('user.logout:before', $this, $session);
+        $kirby->trigger('user:before', new Hook('user.logout:before', [
+            'user'    => $this,
+            'session' => $session
+        ]));
 
         // remove the user from the session for future requests
         $session->data()->remove('user.id');
@@ -459,11 +471,19 @@ class User extends ModelWithContent
             $session->destroy();
 
             $kirby->trigger('user.logout:after', $this, null);
+            $kirby->trigger('user:after', new Hook('user.logout:after', [
+                'user'    => $this,
+                'session' => null
+            ]));
         } else {
             // privilege change
             $session->regenerateToken();
 
             $kirby->trigger('user.logout:after', $this, $session);
+            $kirby->trigger('user:after', new Hook('user.logout:after', [
+                'user'    => $this,
+                'session' => $session
+            ]));
         }
     }
 
