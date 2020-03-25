@@ -128,7 +128,7 @@ class Hook
 
     /**
      * Register actions
-     * It promises to run a callback in the specified action.
+     * It promises to run a callback in the specified action
      *
      * @param string $action
      * @param Closure $callback
@@ -154,7 +154,7 @@ class Hook
     }
 
     /**
-     * Returns the prop array
+     * Returns the arguments array
      *
      * @return array
      */
