@@ -311,22 +311,23 @@ trait PageActions
      */
     protected function commit(string $action, array $arguments, Closure $callback)
     {
-        $old    = $this->hardcopy();
+        $old        = $this->hardcopy();
+        $kirby      = $this->kirby();
+        $beforeName = 'page.' . $action . ':before';
+        $afterName  = 'page.' . $action . ':after';
+
         $values = array_values($arguments);
         $this->rules()->$action(...$values);
 
-        $beforeHookName = 'page.' . $action . ':before';
-        $afterHookName  = 'page.' . $action . ':after';
-
-        $this->kirby()->trigger($beforeHookName, ...$values);
-        $this->kirby()->trigger('page:before', new Hook($beforeHookName, $arguments));
+        $kirby->trigger($beforeName, ...$values);
+        $kirby->trigger('page:before', new Hook($beforeName, $arguments));
 
         $result = $callback(...$values);
 
-        $this->kirby()->trigger($afterHookName, $result, $old);
-        $this->kirby()->trigger('page:after', new Hook($afterHookName, ['page' => $result, 'oldPage' => $old]));
+        $kirby->trigger($afterName, $result, $old);
+        $kirby->trigger('page:after', new Hook($afterName, ['page' => $result, 'oldPage' => $old]));
 
-        $this->kirby()->cache('pages')->flush();
+        $kirby->cache('pages')->flush();
 
         return $result;
     }
