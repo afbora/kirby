@@ -42,7 +42,7 @@ trait PageActions
             return $this;
         }
 
-        return $this->commit('changeNum', ['page' => $this, 'num' => $num], function ($oldPage, $num) {
+        return $this->commit('changeNum', [$this, $num], function ($oldPage, $num) {
             $newPage = $oldPage->clone([
                 'num'     => $num,
                 'dirname' => null,
@@ -97,7 +97,7 @@ trait PageActions
             return $this;
         }
 
-        return $this->commit('changeSlug', ['page' => $this, 'slug' => $slug, 'languageCode' => $languageCode = null], function ($oldPage, $slug) {
+        return $this->commit('changeSlug', [$this, $slug, $languageCode = null], function ($oldPage, $slug) {
             $newPage = $oldPage->clone([
                 'slug'    => $slug,
                 'dirname' => null,
@@ -151,7 +151,7 @@ trait PageActions
             throw new InvalidArgumentException('Use the changeSlug method to change the slug for the default language');
         }
 
-        return $this->commit('changeSlug', ['page' => $this, 'slug' => $slug, 'languageCode' => $languageCode], function ($page, $slug, $languageCode) {
+        return $this->commit('changeSlug', [$this, $slug, $languageCode], function ($page, $slug, $languageCode) {
             // remove the slug if it's the same as the folder name
             if ($slug === $page->uid()) {
                 $slug = null;
@@ -185,7 +185,7 @@ trait PageActions
 
     protected function changeStatusToDraft()
     {
-        $page = $this->commit('changeStatus', ['page' => $this, 'status' => 'draft', 'position' => null], function ($page) {
+        $page = $this->commit('changeStatus', [$this, 'draft', null], function ($page) {
             return $page->unpublish();
         });
 
@@ -206,7 +206,7 @@ trait PageActions
             return $this;
         }
 
-        $page = $this->commit('changeStatus', ['page' => $this, 'status' => 'listed', 'position' => $num], function ($page, $status, $position) {
+        $page = $this->commit('changeStatus', [$this, 'listed', $num], function ($page, $status, $position) {
             return $page->publish()->changeNum($position);
         });
 
@@ -226,7 +226,7 @@ trait PageActions
             return $this;
         }
 
-        $page = $this->commit('changeStatus', ['page' => $this, 'status' => 'unlisted', 'position' => null], function ($page) {
+        $page = $this->commit('changeStatus', [$this, 'unlisted', null], function ($page) {
             return $page->publish()->changeNum(null);
         });
 
@@ -247,7 +247,7 @@ trait PageActions
             return $this;
         }
 
-        return $this->commit('changeTemplate', ['page' => $this, 'template' => $template], function ($oldPage, $template) {
+        return $this->commit('changeTemplate', [$this, $template], function ($oldPage, $template) {
             if ($this->kirby()->multilang() === true) {
                 $newPage = $this->clone([
                     'template' => $template
@@ -290,7 +290,7 @@ trait PageActions
      */
     public function changeTitle(string $title, string $languageCode = null)
     {
-        return $this->commit('changeTitle', ['page' => $this, 'title' => $title, 'languageCode' => $languageCode], function ($page, $title, $languageCode) {
+        return $this->commit('changeTitle', [$this, $title, $languageCode], function ($page, $title, $languageCode) {
             return $page->save(['title' => $title], $languageCode);
         });
     }
@@ -308,27 +308,18 @@ trait PageActions
      * @param array $arguments
      * @param Closure $callback
      * @return mixed
+     * @throws \ReflectionException
      */
     protected function commit(string $action, array $arguments, Closure $callback)
     {
-        $old        = $this->hardcopy();
-        $kirby      = $this->kirby();
-        $beforeName = 'page.' . $action . ':before';
-        $afterName  = 'page.' . $action . ':after';
+        $old   = $this->hardcopy();
+        $kirby = $this->kirby();
 
-        $values = array_values($arguments);
-        $this->rules()->$action(...$values);
-
-        $kirby->trigger($beforeName, ...$values);
-        $kirby->trigger('page:before', new Hook($beforeName, $arguments));
-
-        $result = $callback(...$values);
-
-        $kirby->trigger($afterName, $result, $old);
-        $kirby->trigger('page:after', new Hook($afterName, ['page' => $result, 'oldPage' => $old]));
-
+        $this->rules()->$action(...$arguments);
+        $kirby->trigger(Hook::for('page.' . $action . ':before', ...$arguments));
+        $result = $callback(...$arguments);
+        $kirby->trigger(Hook::for('page.' . $action . ':after', $result, $old));
         $kirby->cache('pages')->flush();
-
         return $result;
     }
 
@@ -429,7 +420,7 @@ trait PageActions
         $page = $page->clone(['content' => $form->strings(true)]);
 
         // run the hooks and creation action
-        $page = $page->commit('create', ['page' => $page, 'input' => $props], function ($page, $props) {
+        $page = $page->commit('create', [$page, $props], function ($page, $props) {
 
             // always create pages in the default language
             if ($page->kirby()->multilang() === true) {
@@ -533,7 +524,7 @@ trait PageActions
                     'kirby' => $app,
                     'page'  => $app->page($this->id()),
                     'site'  => $app->site(),
-                ]);
+                ], '');
 
                 return (int)$template;
         }
@@ -547,7 +538,7 @@ trait PageActions
      */
     public function delete(bool $force = false): bool
     {
-        return $this->commit('delete', ['page' => $this, 'force' => $force], function ($page, $force) {
+        return $this->commit('delete', [$this, $force], function ($page, $force) {
 
             // delete all files individually
             foreach ($page->files() as $file) {
@@ -604,7 +595,7 @@ trait PageActions
         // create the slug for the duplicate
         $slug = Str::slug($slug ?? $this->slug() . '-copy');
 
-        return $this->commit('duplicate', ['page' => $this, 'input' => $slug, 'options' => $options], function ($page, $slug, $options) {
+        return $this->commit('duplicate', [$this, $slug, $options], function ($page, $slug, $options) {
             return $this->copy([
                 'parent'   => $this->parent(),
                 'slug'     => $slug,

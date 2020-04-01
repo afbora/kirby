@@ -38,7 +38,7 @@ trait FileActions
             return $this;
         }
 
-        return $this->commit('changeName', ['file' => $this, 'name' => $name], function ($oldFile, $name) {
+        return $this->commit('changeName', [$this, $name], function ($oldFile, $name) {
             $newFile = $oldFile->clone([
                 'filename' => $name . '.' . $oldFile->extension(),
             ]);
@@ -87,7 +87,7 @@ trait FileActions
      */
     public function changeSort(int $sort)
     {
-        return $this->commit('changeSort', ['file' => $this, 'sort' => $sort], function ($file, $sort) {
+        return $this->commit('changeSort', [$this, $sort], function ($file, $sort) {
             return $file->save(['sort' => $sort]);
         });
     }
@@ -105,27 +105,18 @@ trait FileActions
      * @param array $arguments
      * @param Closure $callback
      * @return mixed
+     * @throws \ReflectionException
      */
     protected function commit(string $action, array $arguments, Closure $callback)
     {
-        $old        = $this->hardcopy();
-        $kirby      = $this->kirby();
-        $beforeName = 'file.' . $action . ':before';
-        $afterName  = 'file.' . $action . ':after';
+        $old   = $this->hardcopy();
+        $kirby = $this->kirby();
 
-        $values = array_values($arguments);
-        $this->rules()->$action(...$values);
-
-        $kirby->trigger($beforeName, ...$values);
-        $kirby->trigger('file:before', new Hook($beforeName, $arguments));
-
-        $result = $callback(...$values);
-
-        $kirby->trigger($afterName, $result, $old);
-        $kirby->trigger('file:after', new Hook($afterName, ['file' => $result, 'oldFile' => $old]));
-
+        $this->rules()->$action(...$arguments);
+        $kirby->trigger(Hook::for('file.' . $action . ':before', ...$arguments));
+        $result = $callback(...$arguments);
+        $kirby->trigger(Hook::for('file.' . $action . ':after', $result, $old));
         $kirby->cache('pages')->flush();
-
         return $result;
     }
 
@@ -185,7 +176,7 @@ trait FileActions
         $file = $file->clone(['content' => $form->strings(true)]);
 
         // run the hook
-        return $file->commit('create', ['file' => $file, 'upload' => $upload], function ($file, $upload) {
+        return $file->commit('create', [$file, $upload], function ($file, $upload) {
 
             // delete all public versions
             $file->unpublish();
@@ -221,7 +212,7 @@ trait FileActions
      */
     public function delete(): bool
     {
-        return $this->commit('delete', ['file' => $this], function ($file) {
+        return $this->commit('delete', [$this], function ($file) {
 
             // remove all versions in the media folder
             $file->unpublish();
@@ -283,7 +274,7 @@ trait FileActions
      */
     public function replace(string $source)
     {
-        return $this->commit('replace', ['file' => $this, 'upload' => new Image($source)], function ($file, $upload) {
+        return $this->commit('replace', [$this, new Image($source)], function ($file, $upload) {
 
             // delete all public versions
             $file->unpublish();

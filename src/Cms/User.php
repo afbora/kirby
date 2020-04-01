@@ -401,7 +401,7 @@ class User extends ModelWithContent
      * Logs the user in
      *
      * @param string $password
-     * @param \Kirby\Session\Session|array $session Session options or session object to set the user in
+     * @param Session|array $session Session options or session object to set the user in
      * @return bool
      *
      * @throws \Kirby\Exception\PermissionException If the password is not valid
@@ -417,8 +417,10 @@ class User extends ModelWithContent
     /**
      * Logs the user in without checking the password
      *
-     * @param \Kirby\Session\Session|array $session Session options or session object to set the user in
+     * @param Session|array $session Session options or session object to set the user in
      * @return void
+     * @throws InvalidArgumentException
+     * @throws \ReflectionException
      */
     public function loginPasswordless($session = null): void
     {
@@ -426,39 +428,29 @@ class User extends ModelWithContent
 
         $session = $this->sessionFromOptions($session);
 
-        $kirby->trigger('user.login:before', $this, $session);
-        $kirby->trigger('user:before', new Hook('user.login:before', [
-            'user'    => $this,
-            'session' => $session
-        ]));
+        $kirby->trigger(Hook::for('user.login:before', $this, $session));
 
         $session->regenerateToken(); // privilege change
         $session->data()->set('user.id', $this->id());
         $this->kirby()->auth()->setUser($this);
 
-        $kirby->trigger('user.login:after', $this, $session);
-        $kirby->trigger('user:after', new Hook('user.login:after', [
-            'user'    => $this,
-            'session' => $session
-        ]));
+        $kirby->trigger(Hook::for('user.login:after', $this, $session));
     }
 
     /**
      * Logs the user out
      *
-     * @param \Kirby\Session\Session|array $session Session options or session object to unset the user in
+     * @param Session|array $session Session options or session object to unset the user in
      * @return void
+     * @throws InvalidArgumentException
+     * @throws \ReflectionException
      */
     public function logout($session = null): void
     {
         $kirby   = $this->kirby();
         $session = $this->sessionFromOptions($session);
 
-        $kirby->trigger('user.logout:before', $this, $session);
-        $kirby->trigger('user:before', new Hook('user.logout:before', [
-            'user'    => $this,
-            'session' => $session
-        ]));
+        $kirby->trigger(Hook::for('user.logout:before', $this, $session));
 
         // remove the user from the session for future requests
         $session->data()->remove('user.id');
@@ -470,20 +462,12 @@ class User extends ModelWithContent
             // session is now empty, we might as well destroy it
             $session->destroy();
 
-            $kirby->trigger('user.logout:after', $this, null);
-            $kirby->trigger('user:after', new Hook('user.logout:after', [
-                'user'    => $this,
-                'session' => null
-            ]));
+            $kirby->trigger('user.logout:after', $this, $session);
         } else {
             // privilege change
             $session->regenerateToken();
 
-            $kirby->trigger('user.logout:after', $this, $session);
-            $kirby->trigger('user:after', new Hook('user.logout:after', [
-                'user'    => $this,
-                'session' => $session
-            ]));
+            $kirby->trigger(Hook::for('user.logout:after', $this, $session));
         }
     }
 
@@ -817,8 +801,8 @@ class User extends ModelWithContent
     /**
      * Converts session options into a session object
      *
-     * @param \Kirby\Session\Session|array $session Session options or session object to unset the user in
-     * @return \Kirby\Session\Session
+     * @param Session|array $session Session options or session object to unset the user in
+     * @return Session
      */
     protected function sessionFromOptions($session)
     {
@@ -865,15 +849,16 @@ class User extends ModelWithContent
      * String template builder
      *
      * @param string|null $template
+     * @param array|null $data
      * @return string
      */
-    public function toString(string $template = null): string
+    public function toString(string $template = null, array $data = []): string
     {
         if ($template === null) {
             $template = $this->email();
         }
 
-        return parent::toString($template);
+        return parent::toString($template, $data);
     }
 
     /**

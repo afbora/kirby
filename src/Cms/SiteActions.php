@@ -35,9 +35,9 @@ trait SiteActions
         $kirby = $this->kirby();
 
         $this->rules()->$action(...$arguments);
-        $kirby->trigger('site.' . $action . ':before', ...$arguments);
+        $kirby->trigger(Hook::for('site.' . $action . ':before', ...$arguments));
         $result = $callback(...$arguments);
-        $kirby->trigger('site.' . $action . ':after', $result, $old);
+        $kirby->trigger(Hook::for('site.' . $action . ':after', $result, $old));
         $kirby->cache('pages')->flush();
         return $result;
     }

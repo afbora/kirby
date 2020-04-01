@@ -1312,35 +1312,56 @@ class App
      * Trigger a hook by name
      *
      * @internal
-     * @param string $name
+     * @param string|Hook $hook
      * @param mixed ...$arguments
      * @return void
      */
-    public function trigger(string $name, ...$arguments)
+    public function trigger($hook, ...$arguments)
     {
-        if ($functions = $this->extension('hooks', $name)) {
-            static $level = 0;
-            static $triggered = [];
-            $level++;
+        // inline function for calling hook
+        $callHook = function (string $name, $arguments) {
+            if ($functions = $this->extension('hooks', $name)) {
+                static $level = 0;
+                static $triggered = [];
+                $level++;
 
-            foreach ($functions as $index => $function) {
-                if (in_array($function, $triggered[$name] ?? []) === true) {
-                    continue;
+                foreach ($functions as $index => $function) {
+                    if (in_array($function, $triggered[$name] ?? []) === true) {
+                        continue;
+                    }
+
+                    // mark the hook as triggered, to avoid endless loops
+                    $triggered[$name][] = $function;
+
+                    // bind the App object to the hook
+                    if (is_array($arguments) === true) {
+                        $function->call($this, ...$arguments);
+                    } else {
+                        $function->call($this, $arguments);
+                    }
                 }
 
-                // mark the hook as triggered, to avoid endless loops
-                $triggered[$name][] = $function;
+                $level--;
 
-                // bind the App object to the hook
-                $function->call($this, ...$arguments);
+                if ($level === 0) {
+                    $triggered = [];
+                }
             }
+        };
 
-            $level--;
+        if (is_a($hook, 'Kirby\Cms\Hook') === true) {
+            $name      = $hook->name();
+            $arguments = $hook->arguments();
 
-            if ($level === 0) {
-                $triggered = [];
+            // call wildcard hook if available
+            if ($wildcard = $hook->wildcard()) {
+                $callHook($wildcard, $hook);
             }
+        } else {
+            $name = $hook;
         }
+
+        $callHook($name, $arguments);
     }
 
     /**

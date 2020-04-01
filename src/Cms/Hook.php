@@ -3,6 +3,7 @@
 namespace Kirby\Cms;
 
 use Closure;
+use ReflectionClass;
 
 /**
  * Kirby hook object
@@ -74,24 +75,27 @@ class Hook
      * @param string $name
      * @param array $arguments
      */
-    public function __construct(string $name, array $arguments = [])
+    public function __construct(string $name, $arguments)
     {
         list($parts, $state) = explode(':', $name);
-        list($type, $action) = explode('.', $parts);
+
+        if (strpos($name, '.') !== false) {
+            list($type, $action) = explode('.', $parts);
+        }
 
         $this->name      = $name;
-        $this->type      = $type;
-        $this->action    = $action;
+        $this->type      = $type ?? $parts;
+        $this->action    = $action ?? null;
         $this->state     = $state;
-        $this->arguments = array_change_key_case($arguments);
+        $this->arguments = $arguments;
     }
 
     /**
      * Returns the action of the hook
      *
-     * @return string
+     * @return string|null
      */
-    public function action(): string
+    public function action(): ?string
     {
         return $this->action;
     }
@@ -103,7 +107,37 @@ class Hook
      */
     public function arguments(): array
     {
-        return $this->arguments;
+        return array_values($this->arguments);
+    }
+
+    /**
+     * Creates new hook instance for reflected $arguments
+     *
+     * @param string $name
+     * @param mixed ...$arguments
+     * @return self
+     * @throws \ReflectionException
+     */
+    public static function for(string $name, ...$arguments): self
+    {
+        $hook = new ReflectionClass('Kirby\Cms\Hook');
+        $hook->newInstance($name, ...$arguments);
+        $constructor = $hook->getConstructor();
+
+        $args = [];
+        foreach ($constructor->getParameters() as $parameter) {
+            $paramName     = $parameter->getName();
+            $paramPosition = $parameter->getPosition();
+
+            // change $this to called model as $page, $file, $user
+            if ($paramName === 'this') {
+                $paramName = $hook->getProperty('type');
+            }
+
+            $args[$paramName] = $arguments[$paramPosition] ?? null;
+        }
+
+        return new static($name, $args);
     }
 
     /**
@@ -114,6 +148,17 @@ class Hook
     public function name(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the wildcard name of the hook if available
+     * Wildcard hook available when only action is exists as type.action:state
+     *
+     * @return string|null
+     */
+    public function wildcard(): ?string
+    {
+        return empty($this->action) === false ? $this->type . ':' . $this->state : null;
     }
 
     /**
@@ -137,7 +182,7 @@ class Hook
     public function promise(string $action, Closure $callback): self
     {
         if ($this->action === $action) {
-            $callback(...array_values($this->arguments));
+            $callback(...$this->arguments());
         }
 
         return $this;
