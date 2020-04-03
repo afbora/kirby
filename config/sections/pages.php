@@ -135,8 +135,9 @@ return [
 
             // pagination
             $pages = $pages->paginate([
-                'page'  => $this->page,
-                'limit' => $this->limit
+                'limit'    => $this->limit,
+                'page'     => $this->page,
+                'variable' => $this->variable
             ]);
 
             return $pages;

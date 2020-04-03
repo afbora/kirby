@@ -96,8 +96,9 @@ return [
 
             // apply the default pagination
             $files = $files->paginate([
-                'page'  => $this->page,
-                'limit' => $this->limit
+                'limit'    => $this->limit,
+                'page'     => $this->page,
+                'variable' => $this->variable
             ]);
 
             return $files;
