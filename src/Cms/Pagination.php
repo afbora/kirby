@@ -82,7 +82,7 @@ class Pagination extends BasePagination
 
         if ($params['method'] === 'query') {
             $params['page'] = $params['page'] ?? $params['url']->query()->get($params['variable']);
-        } else {
+        } elseif ($params['method'] === 'param') {
             $params['page'] = $params['page'] ?? $params['url']->params()->get($params['variable']);
         }
 

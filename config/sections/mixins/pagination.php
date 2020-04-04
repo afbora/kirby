@@ -17,23 +17,12 @@ return [
             return get('page', $page);
         },
     ],
-    'computed' => [
-        /**
-         * prevent conflicting pagination with frontend
-         * while calling blueprint sections
-         * sp is specific variable for sections as section page
-         */
-        'variable' => function () {
-            return 'sp';
-        }
-    ],
     'methods' => [
         'pagination' => function () {
             $pagination = new Pagination([
-                'limit'    => $this->limit,
-                'page'     => $this->page,
-                'total'    => $this->total,
-                'variable' => $this->variable
+                'limit' => $this->limit,
+                'page'  => $this->page,
+                'total' => $this->total
             ]);
 
             return [
