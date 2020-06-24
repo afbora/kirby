@@ -324,7 +324,13 @@ class Field extends Component
             }
         }
 
-        if (empty($this->validate) === false) {
+        if (
+            empty($this->validate) === false &&
+            (
+                $this->isEmpty() === false ||
+                ($this->isEmpty() === true && $this->isRequired() === true)
+            )
+        ) {
             $errors = V::errors($this->value(), $this->validate);
 
             if (empty($errors) === false) {
