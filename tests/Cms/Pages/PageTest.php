@@ -1040,4 +1040,32 @@ class PageTest extends TestCase
 
         Page::$models = [];
     }
+
+    public function testPageController()
+    {
+        $page = new Page([
+            'slug' => 'test',
+            'content' => [
+                'title' => 'Test Title'
+            ]
+        ]);
+
+        // valid
+        $newPage = $page->changeTitle('New Title');
+        $data = $page->controller([
+            'page' => $newPage
+        ]);
+
+        $this->assertCount(4, $data);
+        $this->assertInstanceOf('Kirby\Cms\Page', $data['page']);
+        $this->assertSame('New Title', $data['page']->title()->value());
+
+        // invalid
+        $this->expectException('Kirby\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Passing "page" data must be instance of Kirby\Cms\Page');
+
+        $page->controller([
+            'page' => 'string'
+        ]);
+    }
 }

@@ -308,56 +308,6 @@ class AppPluginsTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $kirby->controller('test'));
     }
 
-    public function testControllerValidOverride()
-    {
-        $kirby = new App([
-            'roots' => [
-                'index' => '/dev/null'
-            ],
-            'site' => [
-                'content' => [
-                    'title' => 'Site',
-                ]
-            ],
-            'controllers' => [
-                'test' => function ($site) {
-                    $site = $site->changeTitle('New Title');
-
-                    return ['site' => $site];
-                }
-            ]
-        ]);
-
-        $data = $kirby->controller('test');
-
-        $this->assertInstanceOf('Kirby\Cms\Site', $data['site']);
-        $this->assertSame('New Title', $data['site']->title());
-    }
-
-    public function testControllerInvalidOverride()
-    {
-        $this->expectException('Kirby\Exception\InvalidArgumentException');
-        $this->expectExceptionMessage('Passing "site" data must be instance of Kirby\Cms\Site');
-
-        $kirby = new App([
-            'roots' => [
-                'index' => '/dev/null'
-            ],
-            'site' => [
-                'content' => [
-                    'title' => 'Site',
-                ]
-            ],
-            'controllers' => [
-                'test' => function ($site) {
-                    return ['site' => 'string'];
-                }
-            ]
-        ]);
-
-        $kirby->controller('test');
-    }
-
     public function testFieldMethod()
     {
         $kirby = new App([
