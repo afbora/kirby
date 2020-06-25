@@ -315,42 +315,52 @@ class AppPluginsTest extends TestCase
                 'index' => '/dev/null'
             ],
             'site' => [
-                'content' => [
-                    'title' => 'Site',
+                'children' => [
+                    [
+                        'slug'  => 'test',
+                        'content' => [
+                            'title' => 'Test Title',
+                        ]
+                    ]
                 ]
             ],
             'controllers' => [
-                'test' => function ($site) {
-                    $site = $site->changeTitle('New Title');
+                'test' => function ($page) {
+                    $page = $page->changeTitle('New Title');
 
-                    return ['site' => $site];
+                    return ['page' => $page];
                 }
             ]
         ]);
 
         $data = $kirby->controller('test');
 
-        $this->assertInstanceOf('Kirby\Cms\Site', $data['site']);
-        $this->assertSame('New Title', $data['site']->title());
+        $this->assertInstanceOf('Kirby\Cms\Page', $data['page']);
+        $this->assertSame('New Title', $data['page']->title()->value());
     }
 
     public function testControllerInvalidOverride()
     {
         $this->expectException('Kirby\Exception\InvalidArgumentException');
-        $this->expectExceptionMessage('Passing "site" data must be instance of Kirby\Cms\Site');
+        $this->expectExceptionMessage('Passing "page" data must be instance of Kirby\Cms\Page');
 
         $kirby = new App([
             'roots' => [
                 'index' => '/dev/null'
             ],
             'site' => [
-                'content' => [
-                    'title' => 'Site',
+                'children' => [
+                    [
+                        'slug'  => 'test',
+                        'content' => [
+                            'title' => 'Test Title',
+                        ]
+                    ]
                 ]
             ],
             'controllers' => [
                 'test' => function () {
-                    return ['site' => 'string'];
+                    return ['page' => 'string'];
                 }
             ]
         ]);
