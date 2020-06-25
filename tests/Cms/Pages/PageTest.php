@@ -1050,6 +1050,8 @@ class PageTest extends TestCase
             ]
         ]);
 
+        $page->kirby()->impersonate('kirby');
+
         // valid
         $newPage = $page->changeTitle('New Title');
         $data = $page->controller([
