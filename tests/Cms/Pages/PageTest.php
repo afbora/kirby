@@ -1043,7 +1043,7 @@ class PageTest extends TestCase
 
     public function testPageController()
     {
-        $page = new Page([
+        $page = Page::create([
             'slug' => 'test',
             'content' => [
                 'title' => 'Test Title'
@@ -1053,9 +1053,8 @@ class PageTest extends TestCase
         $page->kirby()->impersonate('kirby');
 
         // valid
-        $newPage = $page->changeTitle('New Title');
         $data = $page->controller([
-            'page' => $newPage
+            'page' => $page->changeTitle('New Title')
         ]);
 
         $this->assertCount(4, $data);
