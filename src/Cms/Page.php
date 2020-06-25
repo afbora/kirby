@@ -358,10 +358,10 @@ class Page extends ModelWithContent
 
             foreach ($controllerData as $key => $value) {
                 if (in_array($key, $classes) === true) {
-                    if (is_a($value, $classes[$key])) {
+                    if (is_a($value, $classes[$key]) === true) {
                         $data[$key] = $value;
                     } else {
-                        throw new InvalidArgumentException('Passing "' . $key . '" data must be instance of ' . $classes[$key]);
+                        throw new InvalidArgumentException('Passing "' . $key . '" data must be instance of ' . $classes[$key]. ' in controller');
                     }
                 } else {
                     $data[$key] = $value;
