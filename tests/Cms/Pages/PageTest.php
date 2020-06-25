@@ -19,6 +19,8 @@ class PageTestForceLocked extends Page
 
 class PageTest extends TestCase
 {
+    protected $app;
+
     /**
      * Deregister any plugins for the page
      *
@@ -31,7 +33,7 @@ class PageTest extends TestCase
 
     public function testBlueprints()
     {
-        new App([
+        $this->app = new App([
             'roots' => [
                 'index' => '/dev/null'
             ],
@@ -1043,14 +1045,14 @@ class PageTest extends TestCase
 
     public function testPageController()
     {
+        $this->app->impersonate('kirby');
+
         $page = Page::create([
             'slug' => 'test',
             'content' => [
                 'title' => 'Test Title'
             ]
         ]);
-
-        $page->kirby()->impersonate('kirby');
 
         // valid
         $data = $page->controller([
