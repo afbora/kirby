@@ -357,7 +357,7 @@ class Page extends ModelWithContent
             ];
 
             foreach ($controllerData as $key => $value) {
-                if (in_array($key, $classes) === true) {
+                if (array_key_exists($key, $classes) === true) {
                     if (is_a($value, $classes[$key]) === true) {
                         $data[$key] = $value;
                     } else {
