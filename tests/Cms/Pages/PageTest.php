@@ -1045,7 +1045,7 @@ class PageTest extends TestCase
     {
         $app = new App([
             'roots' => [
-                'index' => '/dev/null'
+                'index' => __DIR__ . '/fixtures/PageTest'
             ]
         ]);
 
