@@ -1058,7 +1058,7 @@ class PageTest extends TestCase
                 ]
             ],
             'controllers' => [
-                'test' => function ($page) {
+                'default' => function ($page) {
                     $page = $page->changeTitle('New Title');
 
                     return ['page' => $page];
@@ -1095,7 +1095,7 @@ class PageTest extends TestCase
                 ]
             ],
             'controllers' => [
-                'test' => function () {
+                'default' => function () {
                     return ['page' => 'string'];
                 }
             ]
