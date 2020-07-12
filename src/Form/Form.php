@@ -90,9 +90,7 @@ class Form
         $data = $this->values;
 
         foreach ($this->fields as $field) {
-            if ($field->save() === false || $field->unset() === true) {
-                $data[$field->name()] = null;
-            } else {
+            if ($field->save() !== false && $field->unset() !== true) {
                 $data[$field->name()] = $field->data($defaults);
             }
         }
