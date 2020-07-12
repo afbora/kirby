@@ -85,12 +85,21 @@ class Form
         }
     }
 
-    public function data($defaults = false): array
+    public function contentData(): array
+    {
+        return $this->data(false, true);
+    }
+
+    public function data($defaults = false, bool $notNull = false): array
     {
         $data = $this->values;
 
         foreach ($this->fields as $field) {
-            if ($field->save() !== false && $field->unset() !== true) {
+            if ($field->save() === false || $field->unset() === true) {
+                if($notNull === false) {
+                    $data[$field->name()] = null;
+                }
+            } else {
                 $data[$field->name()] = $field->data($defaults);
             }
         }
