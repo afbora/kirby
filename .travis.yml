@@ -24,8 +24,8 @@ install:
   # install and cache PHP extensions
   - ./vendor/bin/ci-pecl-install memcached
   - ./vendor/bin/ci-pecl-install pcov
+  - ./vendor/bin/ci-pecl-install apcu
 before_script:
-  - yes '' | pecl install apcu
   - mkdir -p build/logs
   - ls -al
 script:
