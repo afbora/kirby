@@ -24,7 +24,11 @@ install:
   - ./vendor/bin/ci-pecl-install memcached
   - ./vendor/bin/ci-pecl-install pcov
 before_script:
-  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "8.0" ]]; then echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+  # Change the apc.so position to fix issues.
+  - sudo sed -i '/apc.so/d' ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - sudo sed -i '/apcu.so/d' ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - mkdir -p build/logs
   - ls -al
 script:
