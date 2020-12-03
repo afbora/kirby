@@ -12,7 +12,8 @@ before_install:
   # set up PHP config
   - phpenv config-rm xdebug.ini || true # code coverage is generated with PCOV
   - phpenv config-add tests/php.ini
-  - pecl install apcu-5.1.19
+  - echo "apc.enabled = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "apc.enable_cli = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 install:
   # ensure that the Composer config is valid
   - composer validate
