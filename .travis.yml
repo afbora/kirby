@@ -25,6 +25,7 @@ install:
   - ./vendor/bin/ci-pecl-install memcached
   - ./vendor/bin/ci-pecl-install pcov
 before_script:
+  - yes '' | pecl install apcu
   - mkdir -p build/logs
   - ls -al
 script:
