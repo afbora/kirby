@@ -21,9 +21,9 @@ install:
   - composer install -n --ignore-platform-reqs --no-suggest
 
   # install and cache PHP extensions
+  - ./vendor/bin/ci-pecl-install -f apcu-5.1.19
   - ./vendor/bin/ci-pecl-install memcached
   - ./vendor/bin/ci-pecl-install pcov
-  - ./vendor/bin/ci-pecl-install apcu-5.1.19
 before_script:
   - mkdir -p build/logs
   - ls -al
