@@ -6,7 +6,6 @@ php:
   - 7.3
   - 7.4
   - 8.0
-  - nightly
 services:
   - memcached
 before_install:
@@ -24,10 +23,8 @@ install:
   # install and cache PHP extensions
   - ./vendor/bin/ci-pecl-install memcached
   - ./vendor/bin/ci-pecl-install pcov
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "8.0" ]]; then ./vendor/bin/ci-pecl-install apcu; fi;
 before_script:
-  - yes "" | pecl install -f apcu-5.1.19
-  - printf "apc.enable_cli=1" > apcu-cli.ini
-  - phpenv config-add apcu-cli.ini
   - mkdir -p build/logs
   - ls -al
 script:
@@ -44,7 +41,6 @@ jobs:
   fast_finish: true
   allow_failures:
     - php: 8.0
-    - php: nightly
   include:
   - name: Backend Coding Standards
     language: php
