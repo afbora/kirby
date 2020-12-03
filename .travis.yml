@@ -23,7 +23,7 @@ install:
   # install and cache PHP extensions
   - ./vendor/bin/ci-pecl-install memcached
   - ./vendor/bin/ci-pecl-install pcov
-  - if [ "$TRAVIS_PHP_VERSION" == "8.0" ] then ./vendor/bin/ci-pecl-install apcu; fi;
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "8.0" ]]; then printf "\n" | pecl install apcu; fi
 before_script:
   - mkdir -p build/logs
   - ls -al
