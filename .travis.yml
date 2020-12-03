@@ -12,6 +12,7 @@ before_install:
   # set up PHP config
   - phpenv config-rm xdebug.ini || true # code coverage is generated with PCOV
   - phpenv config-add tests/php.ini
+  - ./vendor/bin/ci-pecl-install -f apcu-5.1.19
 install:
   # ensure that the Composer config is valid
   - composer validate
@@ -24,7 +25,6 @@ install:
   - ./vendor/bin/ci-pecl-install memcached
   - ./vendor/bin/ci-pecl-install pcov
 before_script:
-  - ./vendor/bin/ci-pecl-install apcu-5.1.19
   - mkdir -p build/logs
   - ls -al
 script:
