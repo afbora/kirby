@@ -3,6 +3,8 @@ dist: bionic
 
 language: php
 php:
+  - 7.3
+  - 7.4
   - 8.0
   - 8.0snapshot
   - nightly
@@ -35,6 +37,5 @@ cache:
     - vendor
     - ~/.composer/cache
     - ~/pecl_cache
-
 jobs:
   fast_finish: true
