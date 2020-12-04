@@ -8,6 +8,7 @@ php:
   - 8.0
   - 8.0snapshot
   - nightly
+  - 8.0.0
 services:
   - memcached
 before_install:
