@@ -27,6 +27,8 @@ before_script:
   - mkdir -p build/logs
   - ls -al
 script:
+  - phpize
+  - ./configure --enable-apcu-debug
   - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 after_success:
   - travis_retry ./vendor/bin/php-coveralls -v
