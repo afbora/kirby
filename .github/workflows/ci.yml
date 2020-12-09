@@ -101,7 +101,7 @@ jobs:
     name: Frontend E2E
     env:
       extensions: mbstring, ctype, curl, gd, memcached
-      key: cache-backend-coding-standarts
+      key: cache-frontend-e2e
 
     steps:
       - name: Checkout
@@ -129,7 +129,7 @@ jobs:
 
           # install npm dependencies
           npm ci
-          npm install -g wait-on
+          npm install -g wait-on --no-optional
 
       - name: Script
         run: |
