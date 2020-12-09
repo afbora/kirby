@@ -92,10 +92,10 @@ jobs:
 
   frontend-e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
-        timeout-minutes: 3
         node: [ 15 ]
         php-version: [ 7.4 ]
 
@@ -162,10 +162,10 @@ jobs:
 
   frontend-eslint:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
-        timeout-minutes: 3
         node: [ 15 ]
         php-version: [ 7.4 ]
 
