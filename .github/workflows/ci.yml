@@ -23,9 +23,6 @@ jobs:
           mkdir -p build/logs
           ls -al
           sudo apt-get install -y locales-all
-          locale -a
-      - name: Install Memcached
-        uses: niden/actions-memcached@v7
 
       - name: Setup cache environment
         id: extcache
