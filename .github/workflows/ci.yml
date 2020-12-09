@@ -12,6 +12,7 @@ jobs:
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     env:
       extensions: apcu, pcov, mbstring, ctype, curl, gd, memcached
+      ini-values: extension="apcu.so", apc.enabled=1, apc.enable_cli=1, pcov.directory=., pcov.exclude="~(vendor|tests)~"
       key: cache-v1
 
     steps:
@@ -23,8 +24,6 @@ jobs:
           mkdir -p build/logs
           ls -al
           sudo apt-get install -y locales-all
-          phpenv config-rm xdebug.ini || true # code coverage is generated with PCOV
-          phpenv config-add tests/php.ini
 
       - name: Install Memcached
         uses: niden/actions-memcached@v7
@@ -35,6 +34,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: ${{ env.extensions }}
+          ini-values: ${{ env.ini-values }}
           key: ${{ env.key }}
 
       - name: Cache extensions
