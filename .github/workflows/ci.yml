@@ -10,6 +10,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Before Script
+        run: |
+          mkdir -p build/logs
+          ls -al
       - name: Memcached Service
         uses: niden/actions-memcached@v7
       - name: Setup PHP with PCOV
@@ -18,7 +22,10 @@ jobs:
           coverage: pcov
       - name: Install Composer packages
         run: |
+          composer validate
           composer require -n --ignore-platform-reqs "phwoolcon/ci-pecl-cacher" "phpunit/phpunit:^9" "php-coveralls/php-coveralls"
           composer install -n --ignore-platform-reqs --no-suggest
       - name: Run Tests
         run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+      - name: Coveralls
+        run: travis_retry vendor/bin/php-coveralls -v
