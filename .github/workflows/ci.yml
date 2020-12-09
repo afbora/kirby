@@ -12,8 +12,8 @@ jobs:
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     env:
       extensions: apcu, pcov, mbstring, ctype, curl, gd, memcached
-      ini: apc.enabled=1, apc.enable_cli=1, pcov.directory=., pcov.exclude="vendor"
-      key: cache-v1
+      ini: apc.enabled=1, apc.enable_cli=1, pcov.directory=.
+      key: cache-kirby
 
     steps:
       - name: Checkout
