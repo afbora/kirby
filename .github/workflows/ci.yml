@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout
-          uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Before Script
         run: |
@@ -23,12 +23,12 @@ jobs:
           ls -al
 
       - name: Setup cache environment
-          id: extcache
-          uses: shivammathur/cache-extensions@v1
-          with:
-            php-version: ${{ matrix.php-versions }}
-            extensions: ${{ env.extensions }}
-            key: ${{ env.key }}
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
+          key: ${{ env.key }}
 
       - name: Cache extensions
         uses: actions/cache@v2
