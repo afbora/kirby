@@ -12,7 +12,7 @@ jobs:
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     env:
       extensions: apcu, pcov, mbstring, ctype, curl, gd, memcached
-      ini-values: extension="apcu.so", apc.enabled=1, apc.enable_cli=1, pcov.directory=., pcov.exclude=~(vendor|tests)~
+      ini-values: apc.enabled=1, apc.enable_cli=1, pcov.directory=., pcov.exclude="(vendor|tests)"
       key: cache-v1
 
     steps:
