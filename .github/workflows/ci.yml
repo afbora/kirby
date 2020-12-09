@@ -12,7 +12,7 @@ jobs:
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     env:
       extensions: apcu, pcov, mbstring, ctype, curl, gd, memcached
-      ini-values: apc.enabled=1, apc.enable_cli=1, pcov.directory=., pcov.exclude="(vendor|tests)"
+      ini: apc.enabled=1, apc.enable_cli=1, pcov.directory=., pcov.exclude="~(vendor|tests)~"
       key: cache-v1
 
     steps:
@@ -34,7 +34,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: ${{ env.extensions }}
-          ini-values: ${{ env.ini-values }}
+          ini-values: ${{ env.ini }}
           key: ${{ env.key }}
 
       - name: Cache extensions
@@ -49,6 +49,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: ${{ env.extensions }}
+          ini-values: ${{ env.ini }}
           coverage: pcov
 
       - name: Install Composer packages
