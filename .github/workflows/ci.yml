@@ -89,3 +89,64 @@ jobs:
       - name: Run Script
         run: |
           PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config .php_cs --verbose --diff --dry-run
+
+  frontend-e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest ]
+        node-version: [14.x]
+        php-versions: [ 7.4 ]
+
+    name: Frontend E2E
+    env:
+      extensions: mbstring, ctype, curl, gd, memcached
+      key: cache-backend-coding-standarts
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+
+      - name: Setup PHP environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
+
+      - name: Install
+        run: |
+          SANDBOX_DIR="$(dirname ${{ github.workspace }})/sandbox"
+          cd ${{ github.workspace }}/panel
+
+          # install the Sandbox
+          git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git $SANDBOX_DIR
+
+          # use the currently tested `kirby` dir inside the Sandbox
+          rm -rf $SANDBOX_DIR/kirby
+          ln -s ${{ github.workspace }} $SANDBOX_DIR/kirby
+
+          # install npm dependencies
+          npm ci
+          npm install -g wait-on
+
+      - name: Script
+        run: |
+          LOG_DIR="$(dirname ${{ github.workspace }})/_logs"
+          mkdir -p $LOG_DIR
+
+          # start the built-in PHP server
+          phpenv global 7.4
+          php -S localhost:8000 -t $SANDBOX_DIR/public $SANDBOX_DIR/router.php &> $LOG_DIR/php.log &
+
+          # start the Vue CLI server
+          VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> $LOG_DIR/vue-cli.log &
+          wait-on http://localhost:8080/
+
+          cypress_host=http://localhost:8000 npm run test
+
+          for log in $LOG_DIR/*; do
+            echo -e "\033[1m$(basename $log)\033[0m"
+            cat $log
+            echo
+          done
