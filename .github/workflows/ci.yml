@@ -11,7 +11,7 @@ jobs:
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     env:
-      extensions: apcu, pcov, mbstring, ctype, curl, gd
+      extensions: apcu, pcov, mbstring, ctype, curl, gd, memcached
       key: cache-v1
 
     steps:
@@ -22,6 +22,7 @@ jobs:
         run: |
           mkdir -p build/logs
           ls -al
+          sudo add-apt-repository universe
       - name: Install Memcached
         uses: niden/actions-memcached@v7
 
