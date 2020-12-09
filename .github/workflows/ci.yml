@@ -10,6 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Memcached Service
+        uses: niden/actions-memcached@v7
       - name: Setup PHP with PCOV
         uses: shivammathur/setup-php@v2
         with:
