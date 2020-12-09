@@ -95,7 +95,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
-        node-version: [ 14.x ]
+        node-version: [ 15.x ]
         php-version: [ 7.4 ]
 
     name: Frontend E2E
@@ -129,7 +129,7 @@ jobs:
 
           # install npm dependencies
           npm ci
-          npm install -g wait-on --no-optional
+          npm install -g wait-on
 
       - name: Script
         run: |
