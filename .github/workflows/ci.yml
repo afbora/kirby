@@ -2,7 +2,7 @@ name: CI
 on: push
 
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,6 +22,7 @@ jobs:
       - name: Before Script
         run: |
           mkdir -p build/logs
+          touch build/logs/lcov.info
           ls -al
           sudo apt-get install -y locales-all
 
