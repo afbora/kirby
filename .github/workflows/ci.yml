@@ -14,29 +14,44 @@ jobs:
         key: cache-v1 # can be any string, change to clear the extension cache.
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+          uses: actions/checkout@v2
+          
       - name: Before Script
         run: |
           mkdir -p build/logs
           ls -al
+
       - name: Setup cache environment
-        uses: shivammathur/cache-extensions@v1
+          id: extcache
+          uses: shivammathur/cache-extensions@v1
+          with:
+            php-version: ${{ matrix.php-versions }}
+            extensions: ${{ env.extensions }}
+            key: ${{ env.key }}
+
+      - name: Cache extensions
+        uses: actions/cache@v2
         with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: 'apcu, memcached'
-          key: ${{ env.key }}
-      - name: Memcached Service
-        uses: niden/actions-memcached@v7
-      - name: Setup PHP with PCOV
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
           coverage: pcov
+
       - name: Install Composer packages
         run: |
           composer validate
           composer require -n --ignore-platform-reqs "phwoolcon/ci-pecl-cacher" "phpunit/phpunit:^9" "php-coveralls/php-coveralls"
           composer install -n --ignore-platform-reqs --no-suggest
+
       - name: Run Tests
         run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
       - name: Coveralls
         run: travis_retry vendor/bin/php-coveralls -v
