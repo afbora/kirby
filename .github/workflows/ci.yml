@@ -23,6 +23,8 @@ jobs:
           mkdir -p build/logs
           ls -al
           sudo apt-get install -y locales-all
+          phpenv config-rm xdebug.ini || true # code coverage is generated with PCOV
+          phpenv config-add tests/php.ini
 
       - name: Install Memcached
         uses: niden/actions-memcached@v7
