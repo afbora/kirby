@@ -51,12 +51,7 @@ jobs:
           extensions: ${{ env.extensions }}
           ini-values: ${{ env.ini }}
           coverage: pcov
-
-      - name: Install composer packages
-        run: |
-          composer validate
-          composer require -n --ignore-platform-reqs "phwoolcon/ci-pecl-cacher" "phpunit/phpunit:^9" "php-coveralls/php-coveralls"
-          composer install -n --ignore-platform-reqs --no-suggest
+          tools: php-cs-fixer, phpunit:9
 
       - name: Run tests
         run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
