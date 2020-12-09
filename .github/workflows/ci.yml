@@ -102,6 +102,7 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-e2e
+      sandbox-dir: "${{ github.workspace }}/sandbox"
 
     steps:
       - name: Checkout
@@ -124,7 +125,7 @@ jobs:
           echo SANDBOX_DIR
           echo $SANDBOX_DIR
           echo ${SANDBOX_DIR}
-          echo ${{ SANDBOX_DIR }}
+          echo ${{ env.sandbox-dir }}
           echo ${{ github.workspace }}
           cd ${{ github.workspace }}/panel
 
