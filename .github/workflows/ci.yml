@@ -10,9 +10,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: shivammathur/setup-php@v1
+      - name: Setup PHP with PCOV
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.3
           coverage: pcov
-      - run: composer install --no-progress
-      - run: composer check-cs
+      - name: Install Composer packages
+        run:
+          - composer require -n --ignore-platform-reqs "phwoolcon/ci-pecl-cacher" "phpunit/phpunit:^9" "php-coveralls/php-coveralls"
+          - composer install -n --ignore-platform-reqs --no-sugges
+          - ./vendor/bin/ci-pecl-install memcached
+          - ./vendor/bin/ci-pecl-install pcov
