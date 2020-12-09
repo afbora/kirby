@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir -p build/logs
           ls -al
-          sudo add-apt-repository universe
+          locale -a
       - name: Install Memcached
         uses: niden/actions-memcached@v7
 
