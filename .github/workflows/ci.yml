@@ -14,9 +14,10 @@ jobs:
         run: |
           mkdir -p build/logs
           ls -al
-      - name: Cache PHP Extensions
+      - name: Setup cache environment
         uses: shivammathur/cache-extensions@v1
         with:
+          php-version: ${{ matrix.php }}
           extensions: 'apcu, memcached'
       - name: Memcached Service
         uses: niden/actions-memcached@v7
