@@ -121,8 +121,10 @@ jobs:
       - name: Install
         run: |
           SANDBOX_DIR="${{ github.workspace }}/sandbox"
+          echo SANDBOX_DIR
           echo $SANDBOX_DIR
           echo ${SANDBOX_DIR}
+          echo ${{ SANDBOX_DIR }}
           echo ${{ github.workspace }}
           cd ${{ github.workspace }}/panel
 
