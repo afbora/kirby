@@ -22,9 +22,6 @@ jobs:
       - name: Before Script
         run: |
           mkdir -p build/logs
-          mkdir -p coverage
-          touch coverage/lcov.info
-          chmod 777 coverage/lcov.info
           ls -al
           sudo apt-get install -y locales-all
 
@@ -53,15 +50,10 @@ jobs:
           extensions: ${{ env.extensions }}
           ini-values: ${{ env.ini }}
           coverage: pcov
-
-      - name: Install composer packages
-        run: |
-          composer validate
-          composer require -n --ignore-platform-reqs "phwoolcon/ci-pecl-cacher" "phpunit/phpunit:^9" "php-coveralls/php-coveralls"
-          composer install -n --ignore-platform-reqs --no-suggest
+          tools: phpunit:9, composer:v2, php-cs-fixer
 
       - name: Run tests
-        run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+        run: phpunit --coverage-clover build/logs/clover.xml
 
       - name: Coveralls
         uses: coverallsapp/github-action@v1.1.2
