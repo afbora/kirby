@@ -109,7 +109,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Setup node
-         uses: actions/setup-node@v1
+        uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
       - name: Setup PHP environment
