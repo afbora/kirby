@@ -13,7 +13,7 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, apcu, memcached, pcov
       ini: apc.enabled=1, apc.enable_cli=1, pcov.directory=.
-      key: cache-kirby
+      key: cache-tests
 
     steps:
       - name: Checkout
@@ -64,7 +64,6 @@ jobs:
 
   backend-coding-standarts:
     runs-on: ubuntu-latest
-    needs: [tests]
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
@@ -72,9 +71,8 @@ jobs:
 
     name: Backend Coding Standards
     env:
-      extensions: apcu, pcov, mbstring, ctype, curl, gd, memcached
-      ini: apc.enabled=1, apc.enable_cli=1, pcov.directory=.
-      key: cache-kirby
+      extensions: mbstring, ctype, curl, gd, memcached
+      key: cache-backend-coding-standarts
 
     steps:
       - name: Checkout
