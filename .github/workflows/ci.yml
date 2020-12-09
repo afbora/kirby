@@ -11,8 +11,8 @@ jobs:
 
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     env:
-      extensions: apcu, intl, pcov, memcached
-      key: cache-v1 # can be any string, change to clear the extension cache.
+      extensions: apcu, pcov, mbstring, ctype, curl, gd
+      key: cache-v1
 
     steps:
       - name: Checkout
@@ -22,6 +22,8 @@ jobs:
         run: |
           mkdir -p build/logs
           ls -al
+      - name: Install Memcached
+        uses: niden/actions-memcached@v7
 
       - name: Setup cache environment
         id: extcache
