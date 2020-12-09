@@ -43,7 +43,7 @@ jobs:
           key: ${{ steps.extcache.outputs.key }}
           restore-keys: ${{ steps.extcache.outputs.key }}
 
-      - name: Setup PHP
+      - name: Setup PHP environment
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
@@ -51,14 +51,14 @@ jobs:
           ini-values: ${{ env.ini }}
           coverage: pcov
 
-      - name: Install Composer packages
+      - name: Install composer packages
         run: |
           composer validate
           composer require -n --ignore-platform-reqs "phwoolcon/ci-pecl-cacher" "phpunit/phpunit:^9" "php-coveralls/php-coveralls"
           composer install -n --ignore-platform-reqs --no-suggest
 
-      - name: Run Tests
+      - name: Run tests
         run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
       - name: Coveralls
-        run: travis_retry vendor/bin/php-coveralls -v
+        run: vendor/bin/php-coveralls -v
