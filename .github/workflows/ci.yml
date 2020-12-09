@@ -103,8 +103,8 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-e2e
-      sandbox-dir: "${{ github.workspace }}/../sandbox"
-      logs-dir: "${{ github.workspace }}/../_logs"
+      sandbox-dir: "${{ github.workspace }}/_sandbox"
+      logs-dir: "${{ github.workspace }}/_logs"
 
     steps:
       - name: Checkout
@@ -167,11 +167,9 @@ jobs:
       matrix:
         operating-system: [ ubuntu-latest ]
         node: [ 15 ]
-        php-version: [ 7.4 ]
 
     name: Frontend ESLint
     env:
-      extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-eslint
 
     steps:
@@ -191,7 +189,7 @@ jobs:
 
           # install npm dependencies
           npm ci
-
+          npm install -g wait-on
       - name: Script
         run: |
           npm run lint -- --no-fix
