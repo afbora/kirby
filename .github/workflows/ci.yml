@@ -140,6 +140,7 @@ jobs:
 
       - name: Script
         run: |
+          cd ${{ github.workspace }}/panel
           mkdir -p ${{ env.logs-dir }}}
 
           # start the built-in PHP server
@@ -192,4 +193,5 @@ jobs:
           npm install -g wait-on
       - name: Script
         run: |
+          cd ${{ github.workspace }}/panel
           npm run lint -- --no-fix
