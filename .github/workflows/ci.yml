@@ -103,12 +103,22 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-e2e
-      sandbox-dir: "/home/runner/work/kirby/sandbox"
-      logs-dir: "/home/runner/work/kirby/_logs"
+      sandbox-dir: "$(dirname ${{ github.workspace }})/sandbox"
+      logs-dir: "$(dirname ${{ github.workspace }})/_logs"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Test
+        uses: lukka/set-shell-env@v1
+        with:
+          SANDBOX_DIR: $(dirname ${{ github.workspace }})/sandbox
+
+      - name: print $SANDBOX_DIR
+        run: |
+          echo $SANDBOX_DIR
+        shell: bash
 
       - name: Setup node
         uses: actions/setup-node@v1
