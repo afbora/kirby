@@ -118,8 +118,8 @@ jobs:
       - name: Install
         run: |
           export SANDBOX_DIR="$(dirname ${{ github.workspace }})/sandbox"
+          echo $SANDBOX_DIR
           echo ${{ github.workspace }}
-          echo ${{ SANDBOX_DIR }}
           cd ${{ github.workspace }}/panel
 
           # install the Sandbox
