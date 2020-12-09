@@ -117,7 +117,7 @@ jobs:
 
       - name: Install
         run: |
-          SANDBOX_DIR="$(dirname ${{ github.workspace }})/sandbox"
+          export SANDBOX_DIR="$(dirname ${{ github.workspace }})/sandbox"
           cd ${{ github.workspace }}/panel
 
           # install the Sandbox
@@ -133,7 +133,7 @@ jobs:
 
       - name: Script
         run: |
-          LOG_DIR="$(dirname ${{ github.workspace }})/_logs"
+          export LOG_DIR="$(dirname ${{ github.workspace }})/_logs"
           mkdir -p $LOG_DIR
 
           # start the built-in PHP server
