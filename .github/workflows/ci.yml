@@ -103,6 +103,7 @@ jobs:
       extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-e2e
       sandbox-dir: "${{ github.workspace }}/../sandbox"
+      logs-dir: "${{ github.workspace }}/../_logs"
 
     steps:
       - name: Checkout
@@ -121,17 +122,14 @@ jobs:
 
       - name: Install
         run: |
-          SANDBOX_DIR="${{ github.workspace }}/sandbox"
-          echo ${{ env.sandbox-dir }}
-          echo ${{ github.workspace }}
           cd ${{ github.workspace }}/panel
 
           # install the Sandbox
-          git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git $SANDBOX_DIR
+          git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git ${{ env.sandbox-dir }}
 
           # use the currently tested `kirby` dir inside the Sandbox
-          rm -rf $SANDBOX_DIR/kirby
-          ln -s ${{ github.workspace }} $SANDBOX_DIR/kirby
+          rm -rf ${{ env.sandbox-dir }}/kirby
+          ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
 
           # install npm dependencies
           npm ci
@@ -139,19 +137,18 @@ jobs:
 
       - name: Script
         run: |
-          export LOG_DIR="$(dirname ${{ github.workspace }})/_logs"
-          mkdir -p $LOG_DIR
+          mkdir -p ${{ env.logs-dir }}}
 
           # start the built-in PHP server
-          php -S localhost:8000 -t $SANDBOX_DIR/public $SANDBOX_DIR/router.php &> $LOG_DIR/php.log &
+          php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}}/php.log &
 
           # start the Vue CLI server
-          VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> $LOG_DIR/vue-cli.log &
+          VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}}/vue-cli.log &
           wait-on http://localhost:8080/
 
           cypress_host=http://localhost:8000 npm run test
 
-          for log in $LOG_DIR/*; do
+          for log in ${{ env.logs-dir }}}/*; do
             echo -e "\033[1m$(basename $log)\033[0m"
             cat $log
             echo
