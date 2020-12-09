@@ -103,8 +103,8 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-e2e
-      sandbox-dir: "$(dirname ${{ github.workspace }})/sandbox"
-      logs-dir: "$(dirname ${{ github.workspace }})/_logs"
+      sandbox-dir: "/home/runner/work/kirby/sandbox"
+      logs-dir: "/home/runner/work/kirby/_logs"
 
     steps:
       - name: Checkout
@@ -114,7 +114,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-          check-latest: true
 
       - name: Setup PHP environment
         uses: shivammathur/setup-php@v2
@@ -180,7 +179,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-          check-latest: true
 
       - name: Install
         run: |
