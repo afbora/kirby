@@ -141,18 +141,18 @@ jobs:
       - name: Script
         run: |
           cd ${{ github.workspace }}/panel
-          mkdir -p ${{ env.logs-dir }}}
+          mkdir -p ${{ env.logs-dir }}
 
           # start the built-in PHP server
-          php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}}/php.log &
+          php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}/php.log &
 
           # start the Vue CLI server
-          VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}}/vue-cli.log &
+          VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
           wait-on http://localhost:8080/
 
           cypress_host=http://localhost:8000 npm run test
 
-          for log in ${{ env.logs-dir }}}/*; do
+          for log in ${{ env.logs-dir }}/*; do
             echo -e "\033[1m$(basename $log)\033[0m"
             cat $log
             echo
