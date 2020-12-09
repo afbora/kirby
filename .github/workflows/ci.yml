@@ -23,6 +23,8 @@ jobs:
         run: |
           mkdir -p build/logs
           mkdir -p coverage
+          touch coverage/lcov.info
+          chmod 777 coverage/lcov.info
           ls -al
           sudo apt-get install -y locales-all
 
