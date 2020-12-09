@@ -103,19 +103,18 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-e2e
-      sandbox-dir: "${{ github.workspace }}/_sandbox"
-      logs-dir: "${{ github.workspace }}/_logs"
+      sandbox-dir: "$(dirname ${{ github.workspace }})/sandbox"
+      logs-dir: "$(dirname ${{ github.workspace }})/_logs"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          node-version: ${{ matrix.node-version }}
 
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
+          check-latest: true
 
       - name: Setup PHP environment
         uses: shivammathur/setup-php@v2
@@ -176,13 +175,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          node-version: ${{ matrix.node-version }}
 
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
+          check-latest: true
 
       - name: Install
         run: |
