@@ -20,3 +20,5 @@ jobs:
         run: |
           composer require -n --ignore-platform-reqs "phwoolcon/ci-pecl-cacher" "phpunit/phpunit:^9" "php-coveralls/php-coveralls"
           composer install -n --ignore-platform-reqs --no-suggest
+      - name: Run Tests
+        run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
