@@ -10,13 +10,13 @@ jobs:
         php-versions: [ 7.3, 7.4, 8.0 ]
       name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
       env:
-        extensions: intl, pcov
+        extensions: apcu, intl, pcov, memcached
         key: cache-v1 # can be any string, change to clear the extension cache.
 
     steps:
       - name: Checkout
           uses: actions/checkout@v2
-          
+
       - name: Before Script
         run: |
           mkdir -p build/logs
