@@ -34,7 +34,6 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: ${{ env.extensions }}
-          ini-values: ${{ env.ini }}
           key: ${{ env.key }}
 
       - name: Cache extensions
