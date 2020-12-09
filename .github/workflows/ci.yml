@@ -6,4 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     tests:
       matrix:
-        php: [7.3, 7.4, 8.0]
+        php: [ 7.3, 7.4, 8.0 ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v1
+        with:
+          php-version: 7.3
+          coverage: pcov
+      - run: composer install --no-progress
+      - run: composer check-cs
