@@ -15,8 +15,9 @@ jobs:
           mkdir -p build/logs
           ls -al
       - name: Cache PHP Extensions
-        uses: shivammathur/cache-extensions@1.3.2
-        extensions: 'apcu, memcached'
+        uses: shivammathur/cache-extensions@v1
+        with:
+          extensions: 'apcu, memcached'
       - name: Memcached Service
         uses: niden/actions-memcached@v7
       - name: Setup PHP with PCOV
