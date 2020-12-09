@@ -1,0 +1,9 @@
+name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    tests:
+      matrix:
+        php: [7.3, 7.4, 8.0]
