@@ -124,10 +124,9 @@ jobs:
 
       - name: Install
         run: |
-          cd ${{ env.sandbox-dir }}
-
           # install the Sandbox
-          git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git
+          git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git ${{ env.sandbox-dir }}
+          cd ${{ env.sandbox-dir }}
           git submodule update --init --recursive
 
           # use the currently tested `kirby` dir inside the Sandbox
