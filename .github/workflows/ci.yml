@@ -101,7 +101,7 @@ jobs:
 
     name: Frontend E2E
     env:
-      extensions: mbstring, ctype, curl, gd, memcached
+      extensions: mbstring, ctype, curl, gd, apcu, memcached, pcov
       key: cache-frontend-e2e
       logs-dir: "$(dirname ${{ github.workspace }})/_logs"
       sandbox-dir: "$(dirname ${{ github.workspace }})/_sandbox"
@@ -120,6 +120,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           extensions: ${{ env.extensions }}
+          ini-values: ${{ env.ini }}
 
       - name: Install
         run: |
@@ -129,8 +130,8 @@ jobs:
           git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git ${{ env.sandbox-dir }}
 
           # use the currently tested `kirby` dir inside the Sandbox
-          # rm -rf ${{ env.sandbox-dir }}/kirby
-          # ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
+          rm -rf ${{ env.sandbox-dir }}/kirby
+          ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
 
           # install npm dependencies
           npm ci
