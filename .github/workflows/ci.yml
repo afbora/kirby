@@ -103,8 +103,8 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, apcu, memcached, pcov
       key: cache-frontend-e2e
-      logs-dir: "$(dirname ${{ github.workspace }})/_logs"
-      sandbox-dir: "$(dirname ${{ github.workspace }})/_sandbox"
+      logs-dir: "/home/runner/work/kirby/logs"
+      sandbox-dir: "/home/runner/work/kirby/sandbox"
 
     steps:
       - name: Checkout
@@ -143,7 +143,7 @@ jobs:
           mkdir -p ${{ env.logs-dir }}
 
           # start the built-in PHP server
-          nohup php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}/php.log &
+          php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}/php.log &
 
           # start the Vue CLI server
           VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
