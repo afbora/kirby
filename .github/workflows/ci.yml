@@ -137,6 +137,11 @@ jobs:
           npm ci
           npm install -g wait-on
 
+      - name: Cypress run
+          uses: cypress-io/github-action@v2
+          with:
+            env: host=localhost,port=8000
+
       - name: Script
         run: |
           cd ${{ github.workspace }}/panel
@@ -149,7 +154,7 @@ jobs:
           VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
           wait-on http://localhost:8080/
 
-          cypress_host=http://localhost:8000 npm run test
+          npm run test
 
           for log in ${{ env.logs-dir }}/*; do
             echo -e "\033[1m$(basename $log)\033[0m"
