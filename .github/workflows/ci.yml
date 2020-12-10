@@ -137,13 +137,6 @@ jobs:
           npm ci
           npm install -g wait-on
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          working-directory: panel
-          env: host=localhost,port=8000
-          wait-on: "http://localhost:8080"
-
       - name: Script
         run: |
           cd ${{ github.workspace }}/panel
@@ -164,8 +157,15 @@ jobs:
             echo
           done
 
-          killall php
-          killall node
+          # killall php
+          # killall node
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: panel
+          env: host=localhost,port=8000
+          wait-on: "http://localhost:8080"
 
   frontend-eslint:
     runs-on: ubuntu-latest
