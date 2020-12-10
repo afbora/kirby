@@ -157,8 +157,8 @@ jobs:
             echo
           done
 
-          killall php
-          killall node
+          # killall php
+          # killall node
 
   frontend-eslint:
     runs-on: ubuntu-latest
