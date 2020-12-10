@@ -124,10 +124,14 @@ jobs:
 
       - name: Install
         run: |
+          cd ${{ github.workspace }}/panel
+
           # install the Sandbox
           git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git ${{ env.sandbox-dir }}
 
-          cd ${{ github.workspace }}/panel
+          # use the currently tested `kirby` dir inside the Sandbox
+          rm -rf ${{ env.sandbox-dir }}/kirby
+          ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
 
           # install npm dependencies
           npm ci
@@ -135,15 +139,11 @@ jobs:
 
       - name: Script
         run: |
-          # use the currently tested `kirby` dir inside the Sandbox
-          rm -rf ${{ env.sandbox-dir }}/kirby
-          ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
+          cd ${{ github.workspace }}/panel
+          mkdir -p ${{ env.logs-dir }}
 
           # start the built-in PHP server
           php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}/php.log &
-
-          cd ${{ github.workspace }}/panel
-          mkdir -p ${{ env.logs-dir }}
 
           # start the Vue CLI server
           VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
