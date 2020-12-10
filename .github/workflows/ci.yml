@@ -103,8 +103,8 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, memcached
       key: cache-frontend-e2e
-      sandbox-dir: "$(dirname ${{ github.workspace }})/_sandbox"
       logs-dir: "$(dirname ${{ github.workspace }})/_logs"
+      sandbox-dir: "$(dirname ${{ github.workspace }})/_sandbox"
 
     steps:
       - name: Checkout
@@ -129,8 +129,8 @@ jobs:
           git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git ${{ env.sandbox-dir }}
 
           # use the currently tested `kirby` dir inside the Sandbox
-          rm -rf ${{ env.sandbox-dir }}/kirby
-          ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
+          # rm -rf ${{ env.sandbox-dir }}/kirby
+          # ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
 
           # install npm dependencies
           npm ci
