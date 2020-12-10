@@ -139,11 +139,11 @@ jobs:
 
       - name: Script
         run: |
-          cd ${{ env.sandbox-dir }}/kirby/panel
+          cd ${{ github.workspace }}/panel
           mkdir -p ${{ env.logs-dir }}
 
           # start the built-in PHP server
-          php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}/php.log &
+          nohup php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}/php.log &
 
           # start the Vue CLI server
           VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
