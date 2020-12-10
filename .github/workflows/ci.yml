@@ -101,10 +101,10 @@ jobs:
 
     name: Frontend E2E
     env:
-      extensions: mbstring, ctype, curl, gd, apcu, memcached, pcov
+      extensions: mbstring, ctype, curl, gd, apcu, memcached
       key: cache-frontend-e2e
       logs-dir: "$(dirname ${{ github.workspace }})/_logs"
-      sandbox-dir: "$(dirname ${{ github.workspace }})/_sandbox"
+      sandbox-dir: "$(dirname ${{ github.workspace }})/sandbox"
 
     steps:
       - name: Checkout
@@ -124,14 +124,10 @@ jobs:
 
       - name: Install
         run: |
-          cd ${{ github.workspace }}/panel
-
           # install the Sandbox
           git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git ${{ env.sandbox-dir }}
 
-          # use the currently tested `kirby` dir inside the Sandbox
-          rm -rf ${{ env.sandbox-dir }}/kirby
-          ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
+          cd ${{ github.workspace }}/panel
 
           # install npm dependencies
           npm ci
@@ -139,11 +135,15 @@ jobs:
 
       - name: Script
         run: |
-          cd ${{ github.workspace }}/panel
-          mkdir -p ${{ env.logs-dir }}
+          # use the currently tested `kirby` dir inside the Sandbox
+          rm -rf ${{ env.sandbox-dir }}/kirby
+          ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
 
           # start the built-in PHP server
           php -S localhost:8000 -t ${{ env.sandbox-dir }}/public ${{ env.sandbox-dir }}/router.php &> ${{ env.logs-dir }}/php.log &
+
+          cd ${{ github.workspace }}/panel
+          mkdir -p ${{ env.logs-dir }}
 
           # start the Vue CLI server
           VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
