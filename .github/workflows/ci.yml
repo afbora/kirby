@@ -149,8 +149,6 @@ jobs:
           VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
           wait-on http://localhost:8080/
 
-
-
           # killall php
           # killall node
 
@@ -161,14 +159,15 @@ jobs:
           env: host=localhost,port=8000
           wait-on: "http://localhost:8080"
           install: false
-          build: |
-            npm run test
+          build: npm run test
 
-            for log in ${{ env.logs-dir }}/*; do
-              echo -e "\033[1m$(basename $log)\033[0m"
-              cat $log
-              echo
-            done
+      - name: Log output
+        run: |
+          for log in ${{ env.logs-dir }}/*; do
+            echo -e "\033[1m$(basename $log)\033[0m"
+            cat $log
+            echo
+          done
 
   frontend-eslint:
     runs-on: ubuntu-latest
