@@ -137,9 +137,6 @@ jobs:
           npm ci
           npm install -g wait-on
 
-      - name: Script
-        run: |
-          cd ${{ github.workspace }}/panel
           mkdir -p ${{ env.logs-dir }}
 
           # start the built-in PHP server
