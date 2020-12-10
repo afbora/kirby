@@ -124,19 +124,25 @@ jobs:
 
       - name: Install
         run: |
-          cd ${{ github.workspace }}/panel
+          cd ${{ env.sandbox-dir }}
 
           # install the Sandbox
-          git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git ${{ env.sandbox-dir }}
+          git clone --depth 1 --recursive https://github.com/getkirby/sandbox.git
+          git submodule update --init --recursive
 
           # use the currently tested `kirby` dir inside the Sandbox
-          rm -rf ${{ env.sandbox-dir }}/kirby
+          # rm -rf ${{ env.sandbox-dir }}/kirby
           ln -s ${{ github.workspace }} ${{ env.sandbox-dir }}/kirby
+
+          cd ${{ github.workspace }}/panel
 
           # install npm dependencies
           npm ci
           npm install -g wait-on
 
+      - name: Script
+        run: |
+          cd ${{ github.workspace }}/panel
           mkdir -p ${{ env.logs-dir }}
 
           # start the built-in PHP server
