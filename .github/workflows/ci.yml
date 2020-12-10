@@ -138,9 +138,9 @@ jobs:
           npm install -g wait-on
 
       - name: Cypress run
-          uses: cypress-io/github-action@v2
-          with:
-            env: host=localhost,port=8000
+        uses: cypress-io/github-action@v2
+        with:
+          env: host=localhost,port=8000
 
       - name: Script
         run: |
