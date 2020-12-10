@@ -103,8 +103,8 @@ jobs:
     env:
       extensions: mbstring, ctype, curl, gd, apcu, memcached, pcov
       key: cache-frontend-e2e
-      logs-dir: "/home/runner/work/kirby/logs"
-      sandbox-dir: "/home/runner/work/kirby/sandbox"
+      logs-dir: "$(dirname ${{ github.workspace }})/_logs"
+      sandbox-dir: "$(dirname ${{ github.workspace }})/_sandbox"
 
     steps:
       - name: Checkout
@@ -149,25 +149,16 @@ jobs:
           VUE_APP_DEV_SERVER=http://localhost:8000 npm run dev -- --skip-plugins @vue/cli-plugin-eslint &> ${{ env.logs-dir }}/vue-cli.log &
           wait-on http://localhost:8080/
 
-          # killall php
-          # killall node
+          cypress_host=http://localhost:8000 npm run test
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          working-directory: panel
-          env: host=localhost,port=8000
-          wait-on: "http://localhost:8080"
-          install: false
-          build: npm run test
-
-      - name: Log output
-        run: |
           for log in ${{ env.logs-dir }}/*; do
             echo -e "\033[1m$(basename $log)\033[0m"
             cat $log
             echo
           done
+
+          killall php
+          killall node
 
   frontend-eslint:
     runs-on: ubuntu-latest
