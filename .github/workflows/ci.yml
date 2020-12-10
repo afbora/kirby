@@ -140,6 +140,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          working-directory: panel
           env: host=localhost,port=8000
 
       - name: Script
