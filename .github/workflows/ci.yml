@@ -142,6 +142,7 @@ jobs:
         with:
           working-directory: panel
           env: host=localhost,port=8000
+          wait-on: "http://localhost:8080"
 
       - name: Script
         run: |
